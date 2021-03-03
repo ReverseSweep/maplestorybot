@@ -10,7 +10,7 @@ import pyttsx3
 keyboard = Controller()
 
 # Maple window name
-MAPLE_WINDOW_NAME = 'Ristonia'
+MAPLE_WINDOW_NAME = 'Ristonia - A Better Mushroom Game'
 
 # Global variables
 MIN_HP_IN_PERCENTAGE = 40
@@ -84,7 +84,10 @@ def checkDefaults():
     checkHp(handler.gameMonitorInstance.getCurrentHp())
 
     # Check if there is a rune
-    checkRune(handler.gameMonitorInstance.getRuneCoords())
+    isRunePresent = checkRune()
+    while isRunePresent:
+        moveToRuneAndSolve()
+        isRunePresent = checkRune()
 
     # Check if there is a random player
     checkRandomPlayer(handler.gameMonitorInstance.isRandomPlayerInMap())
@@ -109,12 +112,9 @@ def checkFriendPlayer(isFriendPlayerInMap):
         print('FRIEND PLAYER IS IN THE MAP!')
         # pyttsx3.speak("Friend player is in the map")
 
-
-def checkRune(runeCoords):
-    if handler.gameMonitorInstance.getRuneCoords() is not None:
-        print('RUNE HAS BEEN FOUND!')
-        # pyttsx3.speak("Rune has been found")
-
+def moveToRuneAndSolve():
+    runeCoords = handler.gameMonitorInstance.getRuneCoords()
+    if runeCoords:
         goTo(runeCoords.x, runeCoords.y, 3, True)
 
         currentPlayerCoords = handler.gameMonitorInstance.getPlayerCoords()
@@ -166,6 +166,12 @@ def checkRune(runeCoords):
                 handler.gameMonitorInstance.setRuneCoords(None)  # Reset rune flag
                 handler.gameMonitorInstance.runeCoords = None  # Hard reset rune flag
 
+def checkRune():
+    isRunePresent = handler.gameMonitorInstance.getRuneCoords() is not None
+    if isRunePresent:
+        print('RUNE HAS BEEN FOUND!')
+
+    return isRunePresent
 
 def getArrowsKey(arrowsKey):
     return arrowsKey[1]
